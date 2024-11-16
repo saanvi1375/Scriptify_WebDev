@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocaLink</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Insert your Google Maps API key in the script below -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw44ms2WZ-22jdpHjqt7WUBI-83fKojyg&callback=initMap" async defer></script>
+    <script src="script1.js" defer></script>
+</head>
+<body>
+    <!-- Left Section -->
+    <div class="left-section">
+        <img src="public/logo.jpg" alt="LocaLink Logo" class="logo" width="300px" />
+        <div id="location-info">
+            <h2 id="city-name">Fetching your location...</h2>
+            <div class="city-facts" id="city-facts">Discovering interesting facts about your city...</div>
+        </div>
+        <div class="translator">
+            <h4>Your Travel Translator</h4>
+            <p>Effortlessly translate your words into the local language and theirs back to yours. Connect with locals and explore with ease!</p><center>
+            <p><b>Try the Bot Below!</b></p><img src="public/chatbot-icon.jpg" alt="Chatbot" class="chatbot-image" onclick="toggleChatbot()" width="50"></center>
+        </div>
+        
+        <style>
+        /* General Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 350px;
+            height: 400px;
+            display: none;
+            flex-direction: column;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px;
+            border-radius: 15px;
+            margin: 5px 0;
+        }
+
+        .user-bubble {
+            background-color: #DCF8C6;
+            align-self: flex-end;
+        }
+
+        .bot-bubble {
+            background-color: #EDEDED;
+            align-self: flex-start;
+        }
+
+        .chatbot-header {
+            background-color: #0056b3;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .close-chatbot-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .chatbot-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-input-container input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .record-button {
+            background-color: red;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .send-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .language-select {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+    </head>
+
+    <body>    
+        <div class="chatbot-container" id="chatbotContainer">
+            <div class="chatbot-header">Translator Bot</div>
+            <div style="padding: 10px;">
+                <label for="inputLanguage"></label>
+                <select id="inputLanguage">
+                    <option value="auto">Auto Detect</option>
+                    <option value="hi">Hindi</option>
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="ja">Japanese</option>
+                    <option value="kn">Kannada</option>
+                </select>
+    
+                <label for="outputLanguage">To:</label>
+                <select id="outputLanguage">
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="ja">Japanese</option>
+                    <option value="kn">Kannada</option>
+                </select>
+            </div>
+            <style>
+                
+            </style>
+            <div class="chatbot-messages" id="chatMessages"></div>
+            <div class="chat-input-container">
+                <input type="text" id="textInput" placeholder="Type or Talk...">
+                <button class="send-button" onclick="sendMessage()">Send</button>
+                <button class="record-button" onclick="startVoiceInput()"><img src="public/rec.jpg" width="35"></button>
+            </div>
+        </div>
+        
+        <script>
+            const GOOGLE_TRANSLATE_API_KEY = 'AIzaSyC0LUOCzQuDIt_hO2VYK0E_lkZwfYInhcs'; // Replace with your key
+            const chatContainer = document.getElementById("chatbotContainer");
+            const chatMessages = document.getElementById("chatMessages");
+            const textInput = document.getElementById("textInput");
+            const inputLanguage = document.getElementById("inputLanguage");
+            const outputLanguage = document.getElementById("outputLanguage");
+    
+            // Toggle chatbot visibility
+        function toggleChatbot() {
+            const chatbotContainer = document.getElementById("chatbotContainer");
+            if (chatbotContainer.style.display === "none" || chatbotContainer.style.display === "") {
+            chatbotContainer.style.display = "flex"; // Show chatbot
+            } else {
+            chatbotContainer.style.display = "none"; // Hide chatbot
+            }
+        }
+        // Toggle chatbot visibility
+        function toggleChatbot() {
+            chatContainer.style.display = chatContainer.style.display === "none" || chatContainer.style.display === "" ? "flex" : "none";
+        }
+    
+            // Add a chat bubble
+            function addMessage(content, sender = "bot") {
+                const bubble = document.createElement("div");
+                bubble.className = `chat-bubble ${sender === "user" ? "user-bubble" : "bot-bubble"}`;
+                bubble.textContent = content;
+                chatMessages.appendChild(bubble);
+                chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to the bottom
+            }
+    
+            // Send a user message
+            function sendMessage() {
+                const userMessage = textInput.value.trim();
+                if (userMessage) {
+                    addMessage(userMessage, "user");
+                    textInput.value = ""; // Clear input
+                    translateText(userMessage);
+                }
+            }
+    
+            // Start voice input
+            function startVoiceInput() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                    recognition.lang = inputLanguage.value === "auto" ? "en-US" : inputLanguage.value;
+                    recognition.onresult = (event) => {
+                        const speechText = event.results[0][0].transcript;
+                        addMessage(speechText, "user");
+                        translateText(speechText);
+                    };
+                    recognition.start();
+                } else {
+                    addMessage("Speech recognition is not supported in this browser.", "bot");
+                }
+            }
+    
+            // Translate text using Google Translate API
+            function translateText(text) {
+                const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`;
+                const body = {
+                    q: text,
+                    source: inputLanguage.value === "auto" ? undefined : inputLanguage.value,
+                    target: outputLanguage.value,
+                };
+    
+                fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        const translatedText = data.data.translations[0].translatedText;
+                        addMessage(translatedText, "bot");
+                    })
+                    .catch((error) => {
+                        addMessage("Error: Unable to translate. Please try again.", "bot");
+                    });
+            }
+        </script>
+        
+    </div>
+
+    <!-- Middle Section -->
+    <div class="middle-section">
+        <div class="navbar">
+            <div class="row">
+                <button onclick="showLocations('restaurants')">Eateries</button>
+                <button onclick="showLocations('locations')">Famous Spots</button>
+                <button onclick="showLocations('hotels')">Stay</button>
+            </div>
+            <div class="row">
+                <button onclick="showLocations('cafes')">Cafes & Drinks</button>
+                <button onclick="showLocations('events')">Happenings</button>
+                <button onclick="showLocations('gi')">Unique GI</button>
+            </div>
+        </div>
+        <div class="content">
+            <p>Select a category from the navbar to view details.</p>
+        </div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="right-section">
+        <div id="map" class="map">
+            <!-- Map will be rendered here -->
+        </div>
+    </div>
+</body>
+</html>

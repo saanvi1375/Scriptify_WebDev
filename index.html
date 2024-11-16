@@ -1,325 +1,444 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LocaLink</title>
-    <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVHIfIRMab9qb2Y1xu4kAYHI73nGTzBTI&callback=initMap" async defer></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  const key = process.env.GOOGLE_API_KEY;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LocaLink - Explore Your City</title>
+    <script src="./js/place.js"></script>
+    <script src="./js/places.js"></script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw44ms2WZ-22jdpHjqt7WUBI-83fKojyg&libraries=places"
+      async
+      defer
+    ></script>
+    /
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=${key}=initMap"
+      async
+      defer
+    ></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Montserrat:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
     <style>
+      /* Global Styles */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-        /* Global Styles */
-        body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            display: flex;
-            height: 100vh;
-            background-color: #f8f8f8;
-            color: #333;
-        }
+      body {
+        margin: 0;
+        font-family: "Roboto", sans-serif;
+        display: flex;
+        height: 100vh;
+        background-color: #ffffff;
+        color: #2c3e50;
+      }
 
-        h1, h2, h3 {
-            font-family: 'Montserrat', sans-serif;
-        }
+      h1,
+      h2,
+      h3 {
+        font-family: "Montserrat", sans-serif;
+        color: #2c3e50;
+      }
 
-        /* Left Section */
+      /* Left Section */
+      #left {
+        width: 20%;
+        padding: 24px;
+        background-color: #f8f9fa;
+        color: #2c3e50;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 2;
+      }
+
+      #left .logo {
+        width: 50px;
+        height: 50px;
+        background-color: #3498db;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.3em;
+        color: #fff;
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(52, 152, 219, 0.2);
+      }
+
+      #left h1 {
+        font-size: 2em;
+        margin: 0;
+        font-weight: 600;
+        color: #3498db;
+        letter-spacing: 1px;
+      }
+
+      #left p {
+        font-size: 1.1em;
+        color: #7f8c8d;
+        margin-top: 8px;
+      }
+
+      #left .tips {
+        margin-top: 24px;
+      }
+
+      #left .tips h3 {
+        color: #2c3e50;
+        margin-bottom: 12px;
+      }
+
+      #left .tips ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      #left .tips ul li {
+        background-color: #ffffff;
+        margin: 8px 0;
+        padding: 12px 16px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease;
+        color: #2c3e50;
+        border: 1px solid #e1e8ed;
+      }
+
+      #left .tips ul li:hover {
+        background-color: #3498db;
+        color: white;
+        transform: translateX(3px);
+        border-color: #3498db;
+      }
+
+      #left .recorder-container {
+        margin-top: 24px;
+      }
+
+      #left .recorder-btn {
+        background-color: #3498db;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border: none;
+        color: white;
+        font-size: 1em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      #left .recorder-btn:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      #left .output-text {
+        margin-top: 12px;
+        width: 100%;
+        padding: 16px;
+        font-size: 0.95em;
+        background-color: #ffffff;
+        border: 1px solid #e1e8ed;
+        border-radius: 8px;
+        color: #2c3e50;
+        resize: none;
+        min-height: 100px;
+      }
+
+      /* Middle Section */
+      #middle {
+        width: 25%;
+        padding: 24px;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        z-index: 1;
+      }
+
+      .navbar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .navbar button {
+        padding: 10px 16px;
+        font-size: 0.95em;
+        color: white;
+        background-color: #3498db;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .navbar button:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      /* Right Section */
+      #right {
+        width: 55%;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        z-index: 0;
+      }
+
+      .map-container {
+        width: 100%;
+        height: 100%;
+        background-color: #f8f9fa;
+        border-radius: 0;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Content Area Transitions */
+      .transition-fade {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+      }
+
+      .transition-fade.active {
+        opacity: 1;
+      }
+
+      #contentArea {
+        padding: 16px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        border: 1px solid #e1e8ed;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1200px) {
         #left {
-            background-image: url('../public/bgc2.jpg'); /* Add this line */
-            background-size: cover; /* Ensures the image covers the section */
-            background-position: center; /* Centers the image */
-            background-repeat: no-repeat; /* Prevents the image from repeating */
-            width: 32%;  /* Adjusted width */
-            padding: 30px;
-            background-color: #1a1a1a;  /* Fallback color */
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
-            position: relative;
+          width: 25%;
         }
-
-        #left .logo {
-            width: 70px;
-            height: 70px;
-            background-color: #ff5722;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5em;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        #left h1 {
-            font-size: 2.5em;
-            margin: 0;
-            font-weight: 600;
-            color: #ff5722;
-            letter-spacing: 2px;
-        }
-
-        #left p {
-            font-size: 1.2em;
-            color: #f5f5f5;
-            margin-top: 10px;
-        }
-
-        #left .tips {
-            margin-top: 30px;
-            font-size: 1.1em;
-            color: #ddd;
-        }
-
-        #left .tips ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        #left .tips ul li {
-            background-color: #333;
-            margin: 10px 0;
-            padding: 12px 18px;
-            border-radius: 8px;
-            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        #left .tips ul li:hover {
-            background-color: #ff5722;
-            color: white;
-            transform: translateX(5px);
-        }
-
-        #left .recorder-container {
-            margin-top: 30px;
-        }
-
-        #left .recorder-btn {
-            padding: 15px 25px;
-            font-size: 1.1em;
-            background-color: #ff5722;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-
-        #left .recorder-btn:hover {
-            background-color: #e64a19;
-            transform: scale(1.05);
-        }
-
-        #left .output-text {
-            margin-top: 15px;
-            width: 100%;
-            padding: 20px;
-            font-size: 1em;
-            background-color: #333;
-            border: 1px solid #555;
-            border-radius: 10px;
-            color: white;
-            resize: none;
-            min-height: 120px;
-        }
-
-        /* Middle Section */
         #middle {
-            width: 38%; /* Adjusted width */
-            padding: 30px;
-            background-color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-            border-left: 2px solid #ddd;
+          width: 30%;
+        }
+        #right {
+          width: 45%;
+        }
+      }
+
+      @media (max-width: 992px) {
+        body {
+          flex-direction: column;
+          overflow-y: auto;
+        }
+
+        #left,
+        #middle,
+        #right {
+          width: 100%;
+        }
+
+        #left {
+          height: auto;
+          min-height: 300px;
+        }
+
+        #middle {
+          height: auto;
+          padding: 16px;
+        }
+
+        #right {
+          height: 400px;
         }
 
         .navbar {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
+          grid-template-columns: repeat(2, 1fr);
         }
-
-        .navbar button {
-            padding: 12px 20px;
-            font-size: 1.1em;
-            color: white;
-            background-color: #ff5722;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-bottom: 10px;
-        }
-
-        .navbar button:hover {
-            background-color: #e64a19;
-        }
-
-        /* Right Section */
-        #right {
-            width: 30%;  /* Adjusted width */
-            background-color: #e0e0e0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .map-container {
-            width: 100%;
-            height: 100vh;
-            background-color: #bbb;
-            border-radius: 10px;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Transition Effects */
-        .transition-fade {
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-
-        .transition-fade.active {
-            opacity: 1;
-        }
-
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <!-- Left Section -->
     <div id="left">
-        <div class="logo">L</div>
-        <h1>LocaLink</h1>
-        <p>Explore local gems in your city</p>
+      <div class="logo">L</div>
+      <h1>LocaLink</h1>
+      <p>Explore local gems in your city</p>
 
-        <div class="tips">
-            <h3>Local Tips & Tricks</h3>
-            <ul>
-                <li>Explore hidden local cafes</li>
-                <li>Top attractions for a weekend getaway</li>
-                <li>Must-try street food in the city</li>
-            </ul>
-        </div>
+      <div class="tips">
+        <h3>Local Tips & Tricks</h3>
+        <ul>
+          <li>Explore hidden local cafes</li>
+          <li>Top attractions for a weekend getaway</li>
+          <li>Must-try street food in the city</li>
+        </ul>
+      </div>
 
-        <div class="recorder-container">
-            <!-- Updated Recorder Image -->
-            <img src="recorder-icon.png" class="recorder-btn" alt="Start Recording" onclick="startRecording()">
-            <textarea class="output-text" id="outputText" placeholder="Your voice-to-text output will appear here..."></textarea>
-        </div>
+      <div class="recorder-container">
+        <button class="recorder-btn" onclick="startRecording()">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="6" />
+          </svg>
+          Start Recording
+        </button>
+        <textarea
+          class="output-text"
+          id="outputText"
+          placeholder="Your voice-to-text output will appear here..."
+        ></textarea>
+      </div>
     </div>
 
     <!-- Middle Section -->
-    <div id="middle">
-        <div class="navbar">
-            <button onclick="showContent('restaurants')" data-category="restaurants">Restaurants</button>
-            <button onclick="showContent('locations')" data-category="locations">Famous Locations</button>
-            <button onclick="showContent('hotels')" data-category="hotels">Hotels</button>
-            <button onclick="showContent('cafes')" data-category="cafes">Cafes & Drinks</button>
-            <button onclick="showContent('events')" data-category="events">Events</button>
-            <button onclick="showContent('GI')" data-category="GI">GI Products</button>
+    <section class="place-container">
+      <div class="place-overview">
+        <div class="place-filter">
+          <div class="filter-buttons">
+            <li class="filter-li" id="see">
+              <a class="btn btn-blue" href="#"
+                ><i class="material-icons">local_see</i>Site</a
+              >
+            </li>
+            <li class="filter-li" id="hotel">
+              <a class="btn btn-yellow" href="#"
+                ><i class="material-icons">local_hotel</i>Hotel</a
+              >
+            </li>
+            <li class="filter-li" id="mall">
+              <a class="btn btn-green" href="#"
+                ><i class="material-icons">local_mall</i>Shop</a
+              >
+            </li>
+            <li class="filter-li" id="dining">
+              <a class="btn btn-orange" href="#"
+                ><i class="material-icons">local_dining</i>Food</a
+              >
+            </li>
+            <li class="filter-li" id="cafe">
+              <a class="btn btn-purple" href="#"
+                ><i class="material-icons">local_cafe</i>Cafe</a
+              >
+            </li>
+            <li class="filter-li" id="bar">
+              <a class="btn btn-pink" href="#"
+                ><i class="material-icons">local_bar</i>Drinks</a
+              >
+            </li>
+          </div>
+          <div class="action-links" id="filter-actions">
+            <a id="clear-filter">Clear</a>
+            <a id="apply-filter">Apply</a>
+          </div>
         </div>
+        <div id="place-num"></div>
+        <div class="place-list"></div>
+      </div>
 
-        <div id="contentArea" class="transition-fade">
-            <!-- Content will dynamically appear here -->
-        </div>
-    </div>
-
+      <!-- <div class="place-details"> -->
+      <!-- </div> -->
+    </section>
     <!-- Right Section -->
     <div id="right">
-        <div class="map-container" id="map">
-            <script>
-                // Initialize Map
-                function initMap() {
-                    const mapOptions = {
-                        center: { lat: 0, lng: 0 },
-                        zoom: 14,
-                        mapTypeId: 'roadmap',
-                    };
-        
-                    const map = new google.maps.Map(document.getElementById('map'), mapOptions);
-                }
-        
-                // Get Current Location
-                function getLocation() {
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(showPosition, showError);
-                    } else {
-                        alert("Geolocation is not supported by this browser.");
-                    }
-                }
-        
-                function showPosition(position) {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    alert("Latitude: " + lat + "\nLongitude: " + lon);
-        
-                    document.getElementById("locationButton").style.display = "none";
-                    document.getElementById("locationManual").style.display = "none";
-                }
-        
-                function showError(error) {
-                    switch (error.code) {
-                        case error.PERMISSION_DENIED:
-                            alert("User denied the request for Geolocation.");
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            alert("Location information is unavailable.");
-                            break;
-                        case error.TIMEOUT:
-                            alert("The request to get user location timed out.");
-                            break;
-                        case error.UNKNOWN_ERROR:
-                            alert("An unknown error occurred.");
-                            break;
-                    }
-                }
-        
-                // Enable Location Access Popup
-                function enableLocationAccess() {
-                    const popup = document.getElementById("locationPopup");
-                    popup.style.display = "none";
-                    getLocation(); // Call to get location after enabling
-                }
-        
-                // Manual Location
-                function enableManualLocation() {
-                    alert("Manual location feature is not yet implemented.");
-                }
-        
-                // Show location access popup
-                window.onload = function () {
-                    document.getElementById("locationPopup").style.display = "block";
-                };
-            </script>
-        </div>
+      <div class="map-container" id="map"></div>
     </div>
 
     <script>
-        function startRecording() {
-            alert('Recording started...');
-            // You can integrate voice-to-text API here
-        }
+      function initMap() {
+        const mapOptions = {
+          center: { lat: 0, lng: 0 },
+          zoom: 14,
+          mapTypeId: "roadmap",
+          styles: [
+            {
+              featureType: "all",
+              elementType: "geometry",
+              stylers: [{ color: "#f5f5f5" }],
+            },
+            {
+              featureType: "water",
+              elementType: "geometry",
+              stylers: [{ color: "#e3e3e3" }],
+            },
+          ],
+        };
+        const map = new google.maps.Map(
+          document.getElementById("map"),
+          mapOptions
+        );
+      }
 
-        function showContent(section) {
-            const contentArea = document.getElementById('contentArea');
-            contentArea.classList.remove('active');
-            setTimeout(() => {
-                contentArea.innerHTML = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)} Section</h2><p>Content for ${section} will go here.</p>`;
-                contentArea.classList.add('active');
-            }, 500);
+      function startRecording() {
+        if ("webkitSpeechRecognition" in window) {
+          const recognition = new webkitSpeechRecognition();
+          recognition.continuous = false;
+          recognition.interimResults = false;
+
+          recognition.onresult = function (event) {
+            const text = event.results[0][0].transcript;
+            document.getElementById("outputText").value = text;
+          };
+
+          recognition.start();
+        } else {
+          alert("Speech recognition is not supported in this browser.");
         }
+      }
+
+      function showContent(section) {
+        const contentArea = document.getElementById("contentArea");
+        contentArea.classList.remove("active");
+        setTimeout(() => {
+          contentArea.innerHTML = `
+                    <h2>${
+                      section.charAt(0).toUpperCase() + section.slice(1)
+                    }</h2>
+                    <p>Loading ${section} content...</p>
+                `;
+          contentArea.classList.add("active");
+        }, 300);
+      }
+
+      // Initialize location services
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const map = new google.maps.Map(document.getElementById("map"), {
+              center: {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              },
+              zoom: 14,
+            });
+          },
+          () => {
+            console.log("Error: The Geolocation service failed.");
+          }
+        );
+      }
     </script>
-
-</body>
+  </body>
 </html>

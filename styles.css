@@ -1,0 +1,166 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    background-color: #f9f9f9; /* Light background */
+    color: #333333;
+}
+
+/* Left Section */
+.left-section {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #ffffff; /* White background */
+    align-items: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.logo {
+    width: 150px;
+    margin-bottom: 20px;
+}
+#city-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #0056b3; /* Light blue for accent */
+}
+.city-facts {
+    margin-top: 10px;
+    padding: 20px;
+    background-color: rgb(240, 247, 255); /* Very light blue */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    text-align: center;
+    width: 90%;
+    color: #003f7f; /* Deeper blue for text */
+}
+
+/* Translator Section */
+.translator {
+    margin-top: 20px;
+    text-align: center;
+    background-color: #e9f7ff; /* Soft pastel blue */
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: rgb(0, 63, 127);
+}
+.translator h4 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.translator p {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+.translator-link {
+    display: inline-block;
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #0056b3; /* Primary blue */
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+.translator-link:hover {
+    background-color: #004a99; /* Darker blue on hover */
+}
+
+/* Recorder Section */
+.recorder {
+    margin-top: 30px;
+    text-align: center;
+}
+.recorder img {
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    transition: transform 0.2s;
+}
+.recorder img:hover {
+    transform: scale(1.1);
+}
+
+/* Middle Section */
+.middle-section {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-left: 2px solid #e0e0e0;
+    border-right: 2px solid #e0e0e0;
+}
+.navbar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: rgb(0, 63, 127);
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.navbar .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.navbar button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: rgb(229, 234, 240)0;
+    color: #333333;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.2s;
+    cursor: pointer;
+}
+.navbar button:hover {
+    background-color: #e0e0e0;
+    transform: scale(1.05);
+}
+.content {
+    flex: 1;
+    background: #f6f7f9;
+    padding: 15px;
+    border-radius: 12px;
+    overflow-y: auto;
+    color: #f4efef;
+    font-size: 14px;
+    text-align: left;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Right Section */
+.right-section {
+    flex: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border-left: 2px solid #e0e0e0;
+}
+.map {
+    width: 95%;
+    height: 95%;
+    border-radius: 12px;
+    background: #f5f5f5;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.close-chatbot-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
