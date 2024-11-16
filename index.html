@@ -1,60 +1,325 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Local Explorer</title>
-    <link rel="stylesheet" href="style.css">
+    <title>LocaLink</title>
+    <!-- Google Maps API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVHIfIRMab9qb2Y1xu4kAYHI73nGTzBTI&callback=initMap" async defer></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+
+        /* Global Styles */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            height: 100vh;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Left Section */
+        #left {
+            background-image: url('../public/bgc2.jpg'); /* Add this line */
+            background-size: cover; /* Ensures the image covers the section */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            width: 32%;  /* Adjusted width */
+            padding: 30px;
+            background-color: #1a1a1a;  /* Fallback color */
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        #left .logo {
+            width: 70px;
+            height: 70px;
+            background-color: #ff5722;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        #left h1 {
+            font-size: 2.5em;
+            margin: 0;
+            font-weight: 600;
+            color: #ff5722;
+            letter-spacing: 2px;
+        }
+
+        #left p {
+            font-size: 1.2em;
+            color: #f5f5f5;
+            margin-top: 10px;
+        }
+
+        #left .tips {
+            margin-top: 30px;
+            font-size: 1.1em;
+            color: #ddd;
+        }
+
+        #left .tips ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #left .tips ul li {
+            background-color: #333;
+            margin: 10px 0;
+            padding: 12px 18px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        #left .tips ul li:hover {
+            background-color: #ff5722;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        #left .recorder-container {
+            margin-top: 30px;
+        }
+
+        #left .recorder-btn {
+            padding: 15px 25px;
+            font-size: 1.1em;
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        #left .recorder-btn:hover {
+            background-color: #e64a19;
+            transform: scale(1.05);
+        }
+
+        #left .output-text {
+            margin-top: 15px;
+            width: 100%;
+            padding: 20px;
+            font-size: 1em;
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 10px;
+            color: white;
+            resize: none;
+            min-height: 120px;
+        }
+
+        /* Middle Section */
+        #middle {
+            width: 38%; /* Adjusted width */
+            padding: 30px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            border-left: 2px solid #ddd;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .navbar button {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            color: white;
+            background-color: #ff5722;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .navbar button:hover {
+            background-color: #e64a19;
+        }
+
+        /* Right Section */
+        #right {
+            width: 30%;  /* Adjusted width */
+            background-color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .map-container {
+            width: 100%;
+            height: 100vh;
+            background-color: #bbb;
+            border-radius: 10px;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Transition Effects */
+        .transition-fade {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .transition-fade.active {
+            opacity: 1;
+        }
+
+    </style>
 </head>
-
 <body>
-    <div id="app">
-        <header>
-            <h1><center>Welcome to LocaLink</center></h1>
-            <p>Your travel assistant for local phrases, tips, and translations</p>
-        </header>
 
-        <div id="main-content">
-            <section id="location-info">
-                <h2>Allow Location Access</h2>
-                <button id="location-btn">Grant Location Access</button>
+    <!-- Left Section -->
+    <div id="left">
+        <div class="logo">L</div>
+        <h1>LocaLink</h1>
+        <p>Explore local gems in your city</p>
 
-                <div id="local-info">
-                    <h2>Local Phrases & Tips</h2>
-                    <div id="local-phrases"></div>
-
-                    <h3>Nearby Attractions:</h3>
-                    <ul id="nearby-attractions"></ul>
-
-                    <h3>Local Cuisine Recommendations:</h3>
-                    <ul id="local-cuisine"></ul>
-                </div>
-
-                <section id="speech-translation">
-                    <h2>Speech Translation</h2>
-                    <button id="start-speech-btn">Start Speaking</button>
-                    <p id="translation-output"></p>
-                </section>
-            </section>
-
-            <!-- Map Section -->
-            <section id="map">
-                <div id="google-map" style="height: 100%;"></div>
-            </section>
+        <div class="tips">
+            <h3>Local Tips & Tricks</h3>
+            <ul>
+                <li>Explore hidden local cafes</li>
+                <li>Top attractions for a weekend getaway</li>
+                <li>Must-try street food in the city</li>
+            </ul>
         </div>
 
-        <footer>
-            <p>Powered by Google APIs</p>
-        </footer>
+        <div class="recorder-container">
+            <!-- Updated Recorder Image -->
+            <img src="recorder-icon.png" class="recorder-btn" alt="Start Recording" onclick="startRecording()">
+            <textarea class="output-text" id="outputText" placeholder="Your voice-to-text output will appear here..."></textarea>
+        </div>
     </div>
 
-    <script src="script.js"></script>
-    <script src="js/location.js"></script>
-    <script src="js/maps.js"></script>
-    <script src="js/speech.js"></script>
-    <script src="js/notifications.js"></script>
-</body>
+    <!-- Middle Section -->
+    <div id="middle">
+        <div class="navbar">
+            <button onclick="showContent('restaurants')" data-category="restaurants">Restaurants</button>
+            <button onclick="showContent('locations')" data-category="locations">Famous Locations</button>
+            <button onclick="showContent('hotels')" data-category="hotels">Hotels</button>
+            <button onclick="showContent('cafes')" data-category="cafes">Cafes & Drinks</button>
+            <button onclick="showContent('events')" data-category="events">Events</button>
+            <button onclick="showContent('GI')" data-category="GI">GI Products</button>
+        </div>
 
+        <div id="contentArea" class="transition-fade">
+            <!-- Content will dynamically appear here -->
+        </div>
+    </div>
+
+    <!-- Right Section -->
+    <div id="right">
+        <div class="map-container" id="map">
+            <script>
+                // Initialize Map
+                function initMap() {
+                    const mapOptions = {
+                        center: { lat: 0, lng: 0 },
+                        zoom: 14,
+                        mapTypeId: 'roadmap',
+                    };
+        
+                    const map = new google.maps.Map(document.getElementById('map'), mapOptions);
+                }
+        
+                // Get Current Location
+                function getLocation() {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(showPosition, showError);
+                    } else {
+                        alert("Geolocation is not supported by this browser.");
+                    }
+                }
+        
+                function showPosition(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    alert("Latitude: " + lat + "\nLongitude: " + lon);
+        
+                    document.getElementById("locationButton").style.display = "none";
+                    document.getElementById("locationManual").style.display = "none";
+                }
+        
+                function showError(error) {
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            alert("User denied the request for Geolocation.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            alert("Location information is unavailable.");
+                            break;
+                        case error.TIMEOUT:
+                            alert("The request to get user location timed out.");
+                            break;
+                        case error.UNKNOWN_ERROR:
+                            alert("An unknown error occurred.");
+                            break;
+                    }
+                }
+        
+                // Enable Location Access Popup
+                function enableLocationAccess() {
+                    const popup = document.getElementById("locationPopup");
+                    popup.style.display = "none";
+                    getLocation(); // Call to get location after enabling
+                }
+        
+                // Manual Location
+                function enableManualLocation() {
+                    alert("Manual location feature is not yet implemented.");
+                }
+        
+                // Show location access popup
+                window.onload = function () {
+                    document.getElementById("locationPopup").style.display = "block";
+                };
+            </script>
+        </div>
+    </div>
+
+    <script>
+        function startRecording() {
+            alert('Recording started...');
+            // You can integrate voice-to-text API here
+        }
+
+        function showContent(section) {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.classList.remove('active');
+            setTimeout(() => {
+                contentArea.innerHTML = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)} Section</h2><p>Content for ${section} will go here.</p>`;
+                contentArea.classList.add('active');
+            }, 500);
+        }
+    </script>
+
+</body>
 </html>
