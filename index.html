@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Explorer</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVHIfIRMab9qb2Y1xu4kAYHI73nGTzBTI&callback=initMap" async defer></script>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <h1><center>Welcome to LocaLink</center></h1>
+            <p>Your travel assistant for local phrases, tips, and translations</p>
+        </header>
+
+        <div id="main-content">
+            <section id="location-info">
+                <h2>Allow Location Access</h2>
+                <button id="location-btn">Grant Location Access</button>
+
+                <div id="local-info">
+                    <h2>Local Phrases & Tips</h2>
+                    <div id="local-phrases"></div>
+
+                    <h3>Nearby Attractions:</h3>
+                    <ul id="nearby-attractions"></ul>
+
+                    <h3>Local Cuisine Recommendations:</h3>
+                    <ul id="local-cuisine"></ul>
+                </div>
+
+                <section id="speech-translation">
+                    <h2>Speech Translation</h2>
+                    <button id="start-speech-btn">Start Speaking</button>
+                    <p id="translation-output"></p>
+                </section>
+            </section>
+
+            <!-- Map Section -->
+            <section id="map">
+                <div id="google-map" style="height: 100%;"></div>
+            </section>
+        </div>
+
+        <footer>
+            <p>Powered by Google APIs</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="js/location.js"></script>
+    <script src="js/maps.js"></script>
+    <script src="js/speech.js"></script>
+    <script src="js/notifications.js"></script>
+</body>
+
+</html>
