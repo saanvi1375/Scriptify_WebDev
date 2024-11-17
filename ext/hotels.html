@@ -22,6 +22,14 @@
         color: rgb(6, 6, 6); /* Text color */
         border-radius: 8px; /* Optional: add rounded corners */
 }
+h3{
+  position: relative;
+        display: inline-block; /* Ensure the box wraps the text */
+        padding: 10px 20px; /* Adjust padding as needed */
+        background-color: rgb(246, 245, 242); /* Semi-transparent black box */
+        color: rgb(9, 9, 9); /* Text color */
+        border-radius: 8px; /* Optional: add rounded corners */
+}
 .place-photos img {
     width: 40%;
     height: auto;
@@ -76,6 +84,7 @@
         color: #ff9900;
       }
       .place-photos img {
+        align-content: center;
         max-width: 100%;
         max-height: 150px;
         border-radius: 5px;
@@ -85,6 +94,7 @@
   </head>
   <body>
     <h1>Stay at the best hotels</h1>
+    <h3>Hotels within 10km, all info at a glance!</h3>
     <div id="container">
       <div id="map"></div>
       <div id="places-container"></div>
@@ -133,7 +143,7 @@
 
               const request = {
                 location: userLocation,
-                radius: 8000, // Search within 2 km radius
+                radius: 10000, // Search within 2 km radius
                 type: ['lodging'],
               };
 

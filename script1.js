@@ -6,39 +6,6 @@ function initMap() {
 
     const map = new google.maps.Map(document.getElementById("map"), mapOptions);
     window.map = map;
-
-    if (navigator.geolocation) {
-        // Ask for location access
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const userLocation = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                };
-
-                // Center the map on user's location
-                map.setCenter(userLocation);
-
-                // Add a marker at the user's location
-                const userMarker = new google.maps.Marker({
-                    position: userLocation,
-                    map: map,
-                    title: "Your Location",
-                });
-
-                // Fetch and display the city name
-                fetchCityName(userLocation);
-                
-            },
-            (error) => {
-                alert("Location access denied or unavailable. Centering map on a default location.");
-                map.setCenter({ lat: 12.9716, lng: 77.5946 }); // Default to Bengaluru
-            }
-        );
-    } else {
-        alert("Geolocation not supported by this browser.");
-        map.setCenter({ lat: 12.9716, lng: 77.5946 }); // Default to Bengaluru
-    }
 }
 
 // Function to fetch and display the city name
