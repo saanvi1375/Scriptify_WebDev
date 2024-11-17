@@ -137,7 +137,7 @@
         function initMap() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    const userLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    const userLocation = new google.maps.LatLng(12.9539456,77.4661265);
 
                     // Initialize the map centered on the user's location
                     map = new google.maps.Map(document.getElementById('map'), {
