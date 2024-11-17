@@ -5,170 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LocaLink</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Insert your Google Maps API key in the script below -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw44ms2WZ-22jdpHjqt7WUBI-83fKojyg&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw44ms2WZ-22jdpHjqt7WUBI-83fKojyg&libraries=places&callback=initMap" async defer></script>
     <script src="script1.js" defer></script>
+    <!-- Added Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Left Section -->
     <div class="left-section">
-        <img src="public/logo.jpg" alt="LocaLink Logo" class="logo" width="300px" />
-        <div id="location-info">
-            <h2 id="city-name">Fetching your location...</h2>
-            <div class="city-facts" id="city-facts">Discovering interesting facts about your city...</div>
+        <img src="public/logo.jpg" alt="LocaLink Logo" class="logo" width="00px"/>
+        
+        <div class="location-container">
+            <div class="location-input-group">
+                <input type="text" id="location-search" placeholder="Enter city name..." class="location-input">
+                <button onclick="updateLocation()" class="location-button">Set Location</button>
+                <button onclick="detectLocation()" class="detect-button">
+                    <span class="location-icon"></span> Detect Automatically
+                </button>
+            </div>
+            <div id="location-info">
+                <h2 id="city-name">Select your location...</h2>
+                <div class="city-facts" id="city-facts">Discover interesting facts about your city...</div>
+            </div>
         </div>
-        <div class="translator">
-            <h4>Your Travel Translator</h4>
-            <p>Effortlessly translate your words into the local language and theirs back to yours. Connect with locals and explore with ease!</p><center>
-            <p><b>Try the Bot Below!</b></p><img src="public/chatbot-icon.jpg" alt="Chatbot" class="chatbot-image" onclick="toggleChatbot()" width="50"></center>
+    </div>
+
+    <!-- Middle Section -->
+    <div class="middle-section">
+        <div class="navbar">
+            <div class="row">
+                <a href="ext/restaurants.html" ><button>Cuisines</button></a>
+                <a href="ext/city.html" ><button>Local Attractions</button></a>
+                <a href="ext/hotels.html" ><button>Stay</button></a>
+                <a href="ext/cafe.html" ><button>Cafes and Nightlife</button></a>
+            </div>
         </div>
         
-        <style>
-        /* General Chatbot Styles */
-        .chatbot-container {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 350px;
-            height: 400px;
-            display: none;
-            flex-direction: column;
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-        .chat-bubble {
-            max-width: 80%;
-            padding: 10px;
-            border-radius: 15px;
-            margin: 5px 0;
-        }
+        <div class="content">
+            
+        </div>
 
-        .user-bubble {
-            background-color: #DCF8C6;
-            align-self: flex-end;
-        }
-
-        .bot-bubble {
-            background-color: #EDEDED;
-            align-self: flex-start;
-        }
-
-        .chatbot-header {
-            background-color: #0056b3;
-            color: white;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-        }
-
-        .close-chatbot-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        .chatbot-body {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-        }
-
-        .chatbot-messages {
-            flex: 1;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            background-color: #f9f9f9;
-            padding: 10px;
-            border-radius: 10px;
-        }
-
-        .chat-input-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .chat-input-container input[type="text"] {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .record-button {
-            background-color: red;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            border: none;
-        }
-
-        .send-button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            border: none;
-        }
-
-        .language-select {
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-    </style>
-    </head>
-
-    <body>    
+        <!-- Enhanced Chatbot -->
         <div class="chatbot-container" id="chatbotContainer">
-            <div class="chatbot-header">Translator Bot</div>
-            <div style="padding: 10px;">
-                <label for="inputLanguage"></label>
-                <select id="inputLanguage">
-                    <option value="auto">Auto Detect</option>
-                    <option value="hi">Hindi</option>
-                    <option value="en">English</option>
-                    <option value="es">Spanish</option>
-                    <option value="fr">French</option>
-                    <option value="de">German</option>
-                    <option value="ja">Japanese</option>
-                    <option value="kn">Kannada</option>
-                </select>
-    
-                <label for="outputLanguage">To:</label>
-                <select id="outputLanguage">
-                    <option value="en">English</option>
-                    <option value="hi">Hindi</option>
-                    <option value="es">Spanish</option>
-                    <option value="fr">French</option>
-                    <option value="de">German</option>
-                    <option value="ja">Japanese</option>
-                    <option value="kn">Kannada</option>
-                </select>
+            <div class="chatbot-header">Live Translate Bot</div>
+            <div class="language-selector-container">
+                <div class="language-selector from-language">
+                    <select id="inputLanguage" class="styled-select">
+                        <option value="auto">Auto Detect</option>
+                        <option value="hi">🇮🇳 Hindi</option>
+                        <option value="en">🇬🇧 English</option>
+                        <option value="es">🇪🇸 Spanish</option>
+                        <option value="fr">🇫🇷 French</option>
+                        <option value="de">🇩🇪 German</option>
+                        <option value="ja">🇯🇵 Japanese</option>
+                        <option value="kn">🇮🇳 Kannada</option>
+                    </select>
+                </div>
+                <div class="language-switch">↔️</div>
+                <div class="language-selector to-language">
+                    <select id="outputLanguage" class="styled-select">
+                        <option value="en">🇬🇧 English</option>
+                        <option value="hi">🇮🇳 Hindi</option>
+                        <option value="es">🇪🇸 Spanish</option>
+                        <option value="fr">🇫🇷 French</option>
+                        <option value="de">🇩🇪 German</option>
+                        <option value="ja">🇯🇵 Japanese</option>
+                        <option value="kn">🇮🇳 Kannada</option>
+                    </select>
+                </div>
             </div>
-            <style>
-                
-            </style>
             <div class="chatbot-messages" id="chatMessages"></div>
             <div class="chat-input-container">
-                <input type="text" id="textInput" placeholder="Type or Talk...">
+                <input type="text" id="textInput" placeholder="Type your message here...">
                 <button class="send-button" onclick="sendMessage()">Send</button>
-                <button class="record-button" onclick="startVoiceInput()"><img src="public/rec.jpg" width="35"></button>
+                <button class="record-button" onclick="startVoiceInput()">
+                    <img src="public/rec.jpg" width="35" alt="Record">
+                </button>
             </div>
         </div>
-        
         <script>
             const GOOGLE_TRANSLATE_API_KEY = 'AIzaSyC0LUOCzQuDIt_hO2VYK0E_lkZwfYInhcs'; // Replace with your key
             const chatContainer = document.getElementById("chatbotContainer");
@@ -253,30 +167,401 @@
         
     </div>
 
-    <!-- Middle Section -->
-    <div class="middle-section">
-        <div class="navbar">
-            <div class="row">
-                <button onclick="showLocations('restaurants')">Eateries</button>
-                <button onclick="showLocations('locations')">Famous Spots</button>
-                <button onclick="showLocations('hotels')">Stay</button>
-            </div>
-            <div class="row">
-                <button onclick="showLocations('cafes')">Cafes & Drinks</button>
-                <button onclick="showLocations('events')">Happenings</button>
-                <button onclick="showLocations('gi')">Unique GI</button>
-            </div>
-        </div>
-        <div class="content">
-            <p>Select a category from the navbar to view details.</p>
-        </div>
-    </div>
-
     <!-- Right Section -->
     <div class="right-section">
         <div id="map" class="map">
             <!-- Map will be rendered here -->
         </div>
     </div>
+
+    <style>
+        .content {
+            padding: 10px 20px;
+            margin-bottom: 0px;
+
+        }
+
+        .translator-intro {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .translator-intro h3 {
+            color: #0056b3;
+            margin-bottom: 8px;
+        }
+
+        .translator-intro p {
+            font-size: 0.9em;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .chatbot-container {
+            width: 95%;
+            height: calc(100vh - 250px); /* Adjust based on your needs */
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 0 auto;
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, #0056b3, #00338f);
+            color: white;
+            padding: 15px;
+            font-size: 1.2em;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            text-align: center;
+        }
+
+        .language-selector-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .language-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .language-selector label {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .styled-select {
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: 2px solid #ced4da;
+            font-size: 1em;
+            width: 180px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .from-language .styled-select {
+            background-color: #e3f2fd;
+            border-color: #90caf9;
+        }
+
+        .to-language .styled-select {
+            background-color: #f3e5f5;
+            border-color: #ce93d8;
+        }
+
+        .styled-select:hover {
+            border-color: #0056b3;
+        }
+
+        
+        
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+            padding: 20px;
+            background-color: white;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .chat-input-container input[type="text"] {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #ced4da;
+            border-radius: 25px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input-container input[type="text"]:focus {
+            outline: none;
+            border-color: #0056b3;
+        }
+
+        .send-button, .record-button {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .send-button {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .record-button {
+            background-color: #dc3545;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-button:hover, .record-button:hover {
+            transform: scale(1.05);
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 20px;
+            border-radius: 20px;
+            margin: 8px 0;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+
+        .user-bubble {
+            background-color: #e3f2fd;
+            color: #0056b3;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .bot-bubble {
+            background-color: #fff;
+            color: #333;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+
+    <!-- Your existing JavaScript code remains the same -->
+    <script>
+        // Your existing JavaScript code here
+    </script>
+
+    <style>
+        :root {
+            /* Professional Color Palette */
+            --primary-color: #2C5282;
+            --secondary-color: #4299E1;
+            --accent-color: #63B3ED;
+            --background-color: #F7FAFC;
+            --text-primary: #2D3748;
+            --text-secondary: #4A5568;
+            --border-color: #E2E8F0;
+            --success-color: #48BB78;
+            --warning-color: #ED8936;
+            --error-color: #F56565;
+            --white: #FFFFFF;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Section Widths */
+        .left-section {
+            width: 20%;
+            background: var(--white);
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .middle-section {
+            width: 35%;
+            background: var(--white);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .right-section {
+            width: 45%;
+            background: var(--white);
+        }
+
+        /* Location Input Styling */
+        .location-container {
+            margin-top: 20px;
+        }
+
+        .location-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .location-input {
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .location-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .location-button, .detect-button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .location-button {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .detect-button {
+            background-color: var(--secondary-color);
+            color: #f3f5f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .location-button:hover, .detect-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .location-icon {
+            font-size: 1.2em;
+        }
+
+        
+    </style>
+    <script>
+        let map;
+        let geocoder;
+        let cityMarker;
+
+        // Initialize map and geocoder
+        function initMap() {
+            geocoder = new google.maps.Geocoder();
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 20.5937, lng: 78.9629 }, // Default to India
+                zoom: 5,
+            });
+        }
+
+        // Update location based on the entered city name
+        function updateLocation() {
+            const cityName = document.getElementById("location-search").value.trim();
+            if (cityName) {
+                geocodeCity(cityName);
+            } else {
+                alert("Please enter a city name.");
+            }
+        }
+
+        // Geocode city name and update map
+        function geocodeCity(cityName) {
+            geocoder.geocode({ address: cityName }, (results, status) => {
+                if (status === "OK" && results[0]) {
+                    const location = results[0].geometry.location;
+
+                    // Center the map on the city's location
+                    map.setCenter(location);
+                    map.setZoom(12);
+
+                    // Add or update the city marker
+                    if (cityMarker) {
+                        cityMarker.setMap(null); // Remove existing marker
+                    }
+                    cityMarker = new google.maps.Marker({
+                        position: location,
+                        map: map,
+                        title: cityName,
+                        icon: {
+                            url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                        },
+                    });
+
+                    // Update city name and facts on the page
+                    document.getElementById("city-name").textContent = cityName;
+                    document.getElementById("city-facts").textContent = `Explore the attractions, cuisines, and culture of ${cityName}!`;
+                } else {
+                    alert("Unable to find the location. Please try again.");
+                }
+            });
+        }
+
+        // Detect user's current location
+        function detectLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        reverseGeocode(lat, lng);
+                    },
+                    (error) => {
+                        alert("Unable to detect location. Please enter manually.");
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by your browser.");
+            }
+        }
+
+        // Reverse geocode coordinates to find city name
+        function reverseGeocode(lat, lng) {
+            const latlng = { lat: parseFloat(lat), lng: parseFloat(lng) };
+            geocoder.geocode({ location: latlng }, (results, status) => {
+                if (status === "OK" && results[0]) {
+                    for (const component of results[0].address_components) {
+                        if (component.types.includes("locality")) {
+                            const cityName = component.long_name;
+                            document.getElementById("location-search").value = cityName;
+                            document.getElementById("city-name").textContent = cityName;
+                            geocodeCity(cityName); // Load map for detected city
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize autocomplete for city input
+        function initAutocomplete() {
+            const input = document.getElementById("location-search");
+            new google.maps.places.Autocomplete(input, { types: ["(cities)"] });
+        }
+
+        // Load map and autocomplete on window load
+        window.onload = function () {
+            initMap();
+            initAutocomplete();
+        };
+    </script>
 </body>
 </html>

@@ -18,8 +18,61 @@ body {
     align-items: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+.row{
+    width: 100%;
+}
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    width: 100%;
+    height: 40px; /* Fixed height for the navbar */
+    justify-content: space-between;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Prevents content overflow if text height is large */
+}
+
+/* Button Styles */
+button {
+    flex: 1 1 50%; /* Ensures each button occupies 50% of navbar width */
+    height: 100%; /* Matches the height of the navbar */
+    margin: 0; /* Removes any external spacing */
+    font-size: 1rem;
+    color: #fff;
+    border: none;
+    border-radius: 0; /* Removes additional rounding */
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex; /* Flexbox to center text */
+    justify-content: center; /* Centers text horizontally */
+    align-items: center; /* Centers text vertically */
+}
+
+/* Hover Effect */
+button:hover {
+    transform: translateY(-2px);
+}
+
+/* Active State */
+button:active {
+    transform: translateY(0);
+}
+
+button{
+    padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
 .logo {
-    width: 150px;
+    width: 250px;
+    height: 180px;
     margin-bottom: 20px;
 }
 #city-name {
@@ -163,4 +216,31 @@ body {
     color: white;
     font-size: 20px;
     cursor: pointer;
+}
+.gi-container {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.gi-container h3 {
+    color: #0056b3;
+    margin-bottom: 10px;
+}
+
+.gi-item {
+    margin: 5px 0;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+/* Default Light Mode Styles */
+body {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+h1, h2, h3, p {
+    color: #000000;
 }

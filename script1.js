@@ -59,6 +59,93 @@ function fetchCityName(location) {
     });
 }
 
+// Set up the geocoder
+const geocoder = new google.maps.Geocoder();
+let cityMarker = null;
+
+// Update location based on the entered city name
+function updateLocation() {
+    const cityName = document.getElementById("location-search").value.trim();
+    if (cityName) {
+        geocodeCity(cityName);
+    } else {
+        alert("Please enter a city name.");
+    }
+}
+
+// Geocode city name and update map
+function geocodeCity(cityName) {
+    geocoder.geocode({ address: cityName }, (results, status) => {
+        if (status === "OK" && results[0]) {
+            const location = results[0].geometry.location;
+
+            // Center the map on the city's location
+            map.setCenter(location);
+            map.setZoom(12);
+
+            // Add or update the city marker
+            if (cityMarker) {
+                cityMarker.setMap(null); // Remove existing marker
+            }
+            cityMarker = new google.maps.Marker({
+                position: location,
+                map: map,
+                title: cityName,
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                },
+            });
+
+            // Update city name and facts on the page
+            document.getElementById("city-name").textContent = cityName;
+            document.getElementById("city-facts").textContent = `Explore the attractions, cuisines, and culture of ${cityName}!`;
+        } else {
+            alert("Unable to find the location. Please try again.");
+        }
+    });
+}
+
+// Automatically detect the user's current location
+function detectLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const currentLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+
+                // Center the map on the user's current location
+                map.setCenter(currentLocation);
+                map.setZoom(12);
+
+                // Add or update the location marker
+                if (cityMarker) {
+                    cityMarker.setMap(null); // Remove existing marker
+                }
+                cityMarker = new google.maps.Marker({
+                    position: currentLocation,
+                    map: map,
+                    title: "Current Location",
+                    icon: {
+                        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                    },
+                });
+
+                // Update city name and facts based on current location
+                document.getElementById("city-name").textContent = "Current Location";
+                document.getElementById("city-facts").textContent = "You're currently here!";
+            },
+            () => {
+                alert("Geolocation failed. Please enable location access.");
+            }
+        );
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+
+
 // Function to display locations in the middle section (example)
 function showLocations(category) {
     const contentArea = document.querySelector(".content");
@@ -109,3 +196,33 @@ function fetchLocalFacts(cityName) {
         }
     });
 }
+function showGI() {
+    const giContainer = document.getElementById("gi-container");
+    const giList = document.getElementById("gi-list");
+    giContainer.style.display = "block";
+
+    // Clear existing GI list
+    giList.innerHTML = "Loading...";
+
+    // Fetch user's state
+    const state = getStateFromLocation(); // Replace this with your method to fetch the user's state
+
+    // Fetch and filter GI data
+    fetchGIData(state).then((gis) => {
+        giList.innerHTML = ""; // Clear loading text
+        if (gis.length > 0) {
+            gis.forEach((gi) => {
+                const giItem = document.createElement("div");
+                giItem.className = "gi-item";
+                giItem.innerHTML = `<strong>${gi.gi}</strong> - ${gi.goodsType}`;
+                giList.appendChild(giItem);
+            });
+        } else {
+            giList.innerHTML = "No GI data available for your location.";
+        }
+    }).catch((err) => {
+        console.error(err);
+        giList.innerHTML = "Error fetching GI data.";
+    });
+}
+

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurants</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        display: flex;
+        flex-direction: column;
+      }
+      h1 {
+        position: relative;
+        display: inline-block; /* Ensure the box wraps the text */
+        padding: 10px 20px; /* Adjust padding as needed */
+        background-color: rgb(235, 121, 21); /* Semi-transparent black box */
+        color: rgb(6, 6, 6); /* Text color */
+        border-radius: 8px; /* Optional: add rounded corners */
+}
+.place-photos img {
+    width: 40%;
+    height: auto;
+    border-radius: 10px;
+    align-self: center;
+    margin-top: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+      h1 {
+        margin: 20px 0;
+      }
+      #container {
+        display: flex;
+        flex-direction: row;
+        width: 90%;
+        gap: 20px;
+      }
+      #map {
+        flex: 1;
+        height: 80vh;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      #places-container {
+        flex: 1;
+        height: 80vh;
+        overflow-y: auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .place {
+        background-color: #f9f9f9;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .place-name {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #333;
+      }
+      .place-address {
+        font-size: 1em;
+        color: #555;
+      }
+      .place-rating {
+        margin-top: 8px;
+        font-size: 1em;
+        color: #ff9900;
+      }
+      .place-photos img {
+        max-width: 100%;
+        max-height: 150px;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Stay at the best hotels</h1>
+    <div id="container">
+      <div id="map"></div>
+      <div id="places-container"></div>
+    </div>
+
+    <!-- Load the Google Maps API -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw44ms2WZ-22jdpHjqt7WUBI-83fKojyg&libraries=places&callback=initMap"
+      async
+      defer
+    ></script>
+
+    <script>
+      let map;
+      let service;
+
+      function initMap() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function (position) {
+              const userLocation = new google.maps.LatLng(
+                position.coords.latitude,
+                position.coords.longitude
+              );
+
+              // Initialize the map centered on the user's location
+              map = new google.maps.Map(document.getElementById("map"), {
+                center: userLocation,
+                zoom: 14,
+              });
+
+              // Create a blue circle marker for the user's location
+              const userMarker = new google.maps.Marker({
+                position: userLocation,
+                map: map,
+                title: "Your Location",
+                icon: {
+                  path: google.maps.SymbolPath.CIRCLE, // This creates a circle shape
+                  fillColor: "#0000FF", // Blue color
+                  fillOpacity: 1, // Full opacity
+                  strokeColor: "#ffffff", // White border color
+                  strokeWeight: 2, // Border width
+                  scale: 10, // Size of the circle
+                },
+              });
+
+              const request = {
+                location: userLocation,
+                radius: 8000, // Search within 2 km radius
+                type: ['lodging'],
+              };
+
+              service = new google.maps.places.PlacesService(map);
+              service.nearbySearch(request, callback);
+            },
+            function () {
+              alert("Geolocation failed or permission denied.");
+            }
+          );
+        } else {
+          alert("Geolocation is not supported by this browser.");
+        }
+      }
+
+      function callback(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          const placesContainer = document.getElementById("places-container");
+          placesContainer.innerHTML = ""; // Clear previous results
+
+          // Sort by rating and limit to 10 results
+          results = results.sort((a, b) => b.rating - a.rating).slice(0, 10);
+
+          results.forEach((place) => {
+            const placeDiv = document.createElement("div");
+            placeDiv.classList.add("place");
+
+            const placeName = document.createElement("div");
+            placeName.classList.add("place-name");
+            placeName.innerHTML = place.name;
+
+            const placeAddress = document.createElement("div");
+            placeAddress.classList.add("place-address");
+            placeAddress.innerHTML = place.vicinity;
+
+            const placeRating = document.createElement("div");
+            placeRating.classList.add("place-rating");
+            placeRating.innerHTML = `Rating: ${place.rating}`;
+
+            const placePhotos = document.createElement("div");
+            placePhotos.classList.add("place-photos");
+            if (place.photos && place.photos.length > 0) {
+              const photoUrl = place.photos[0].getUrl({ maxWidth: 200 });
+              const photoImg = document.createElement("img");
+              photoImg.src = photoUrl;
+              photoImg.alt = place.name;
+              placePhotos.appendChild(photoImg);
+            }
+
+            placeDiv.appendChild(placeName);
+            placeDiv.appendChild(placeAddress);
+            placeDiv.appendChild(placeRating);
+            placeDiv.appendChild(placePhotos);
+
+            placesContainer.appendChild(placeDiv);
+
+            // Add marker for the place on the map
+            const marker = new google.maps.Marker({
+              position: place.geometry.location,
+              map: map,
+              title: place.name,
+            });
+
+            // Add info window to marker
+            const infowindow = new google.maps.InfoWindow({
+              content: `<div><strong>${place.name}</strong><br>${place.vicinity}<br>Rating: ${place.rating}</div>`,
+            });
+
+            marker.addListener("click", () => {
+              infowindow.open(map, marker);
+            });
+          });
+        }
+      }
+    </script>
+  </body>
+</html>
